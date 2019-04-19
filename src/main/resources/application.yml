@@ -1,5 +1,5 @@
 server:
-  port: 8095
+  port: 9999
   tomcat:
     uri-encoding: UTF-8
 
@@ -7,8 +7,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/test?charset=utf8mb4&serverTimezone=UTC
     username: root
-    password: kb123789
-    driver-class-name: com.mysql.jdbc.Driver
+    password: KDCghb8832
   jpa:
     database: MYSQL
     show-sql: true

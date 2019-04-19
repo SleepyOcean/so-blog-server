@@ -50,6 +50,14 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>alibab</id>
+            <name>alibaba</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>

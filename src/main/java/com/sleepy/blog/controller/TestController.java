@@ -1,6 +1,7 @@
 package com.sleepy.blog.controller;
 
-import org.springframework.stereotype.Controller;
+import com.sleepy.blog.service.TestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import java.util.Map;
 
 /**
  * 测试
+ *
  * @author Captain
  * @create 2019-04-13 15:45
  */
@@ -18,8 +20,11 @@ import java.util.Map;
 @RequestMapping("/test")
 public class TestController {
 
+    @Autowired
+    TestService testService;
+
     @GetMapping("/test")
-    public String test() {
-        return "连接至后台";
+    public Map<String, Object> test() {
+        return testService.test();
     }
 }
