@@ -23,4 +23,7 @@ public class ArticleEntity {
 
     @Column(name = "title")
     private String title;
+
+    @Column(name = "content", columnDefinition = "text")
+    private String content;
 }

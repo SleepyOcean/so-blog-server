@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/test?charset=utf8mb4&serverTimezone=UTC
     username: root
-    password: KDCghb8832
+    password: kb123789
   jpa:
     database: MYSQL
     show-sql: true
