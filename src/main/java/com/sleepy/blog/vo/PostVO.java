@@ -1,4 +1,4 @@
-package com.sleepy.blog;
+package com.sleepy.blog.vo;
 
 import lombok.Data;
 
@@ -10,6 +10,9 @@ import lombok.Data;
  */
 @Data
 public class PostVO {
+    private String id;
     private String title;
     private String content;
+    private String tags;
+    private String date;
 }

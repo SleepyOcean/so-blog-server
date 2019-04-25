@@ -1,14 +1,16 @@
 package com.sleepy.blog.service.impl;
 
-import com.sleepy.blog.PostVO;
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.repository.ArticleRepository;
 import com.sleepy.blog.service.PostService;
+import com.sleepy.blog.util.StringUtil;
+import com.sleepy.blog.vo.PostVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 文章发布服务接口实现
@@ -27,6 +29,8 @@ public class PostServiceImpl implements PostService {
         ArticleEntity entity = new ArticleEntity();
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
+        entity.setCreateTime(vo.getDate());
+        entity.setTags(vo.getTags());
         articleRepository.save(entity).toString();
         result.setResult("success");
         return result;
@@ -35,9 +39,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public CommonDTO<ArticleEntity> getArticle(PostVO vo) {
         CommonDTO<ArticleEntity> result = new CommonDTO<>();
-        List<ArticleEntity> sets = articleRepository.findAllByTitleLike("%" + vo.getTitle() + "%");
-        result.setResultList(sets);
-        result.setResult(sets.get(0));
+        if (!StringUtil.isNullOrEmpty(vo.getId())) {
+            Optional<ArticleEntity> set = articleRepository.findById(vo.getId());
+            result.setResult(set.get());
+        } else {
+            List<ArticleEntity> sets = articleRepository.findAllByTitleLike("%" + vo.getTitle() + "%");
+            result.setResultList(sets);
+        }
         return result;
     }
 }

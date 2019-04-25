@@ -26,4 +26,13 @@ public class ArticleEntity {
 
     @Column(name = "content", columnDefinition = "text")
     private String content;
+
+    @Column(name = "update_time")
+    private String updateTime;
+
+    @Column(name = "create_time")
+    private String createTime;
+
+    @Column(name = "tags")
+    private String tags;
 }

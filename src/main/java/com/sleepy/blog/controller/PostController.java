@@ -1,14 +1,11 @@
 package com.sleepy.blog.controller;
 
-import com.sleepy.blog.PostVO;
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.service.PostService;
-import com.sleepy.blog.service.TestService;
+import com.sleepy.blog.vo.PostVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 文章发布控制器
@@ -18,7 +15,7 @@ import java.util.Map;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("/post")
+@RequestMapping("/article")
 public class PostController {
     @Autowired
     PostService postService;
@@ -32,4 +29,5 @@ public class PostController {
     public CommonDTO<ArticleEntity> get(@RequestBody PostVO vo) {
         return postService.getArticle(vo);
     }
+
 }
