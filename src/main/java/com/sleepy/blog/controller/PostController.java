@@ -30,4 +30,8 @@ public class PostController {
         return postService.getArticle(vo);
     }
 
+    @PostMapping("/delete")
+    public CommonDTO<ArticleEntity> delete(@RequestBody PostVO vo) {
+        return postService.deleteArticle(vo);
+    }
 }

@@ -28,4 +28,11 @@ public interface PostService {
      */
     CommonDTO<ArticleEntity> getArticle(PostVO vo);
 
+    /**
+     * 删除文章
+     *
+     * @param vo
+     * @return
+     */
+    CommonDTO<ArticleEntity> deleteArticle(PostVO vo);
 }

@@ -1,6 +1,5 @@
 package com.sleepy.blog.service.impl;
 
-import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.repository.ArticleRepository;
 import com.sleepy.blog.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Map<String, Object> test() {
-        Map<String, Object> result = new HashMap<>();
-        ArticleEntity entity = new ArticleEntity();
-        entity.setTitle("测试");
-        articleRepository.save(entity);
+        Map<String, Object> result = new HashMap<>(1);
         result.put("data", articleRepository.findAll());
         return result;
     }

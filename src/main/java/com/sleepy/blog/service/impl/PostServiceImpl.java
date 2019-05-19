@@ -48,4 +48,11 @@ public class PostServiceImpl implements PostService {
         }
         return result;
     }
+
+    @Override
+    public CommonDTO<ArticleEntity> deleteArticle(PostVO vo) {
+        CommonDTO<ArticleEntity> result = new CommonDTO<>();
+        articleRepository.deleteById(vo.getId());
+        return result;
+    }
 }
