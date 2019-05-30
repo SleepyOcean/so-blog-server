@@ -18,5 +18,5 @@ public class CommonDTO<T> {
     private Map<String, Object> extra;
     private Integer status;
     private String message;
-    private String timeout;
+    private Double timeout;
 }

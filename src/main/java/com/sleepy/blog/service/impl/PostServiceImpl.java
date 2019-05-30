@@ -7,6 +7,7 @@ import com.sleepy.blog.service.PostService;
 import com.sleepy.blog.util.StringUtil;
 import com.sleepy.blog.vo.PostVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,8 +43,11 @@ public class PostServiceImpl implements PostService {
         if (!StringUtil.isNullOrEmpty(vo.getId())) {
             Optional<ArticleEntity> set = articleRepository.findById(vo.getId());
             result.setResult(set.get());
-        } else {
+        } else if (!StringUtil.isNullOrEmpty(vo.getTitle())) {
             List<ArticleEntity> sets = articleRepository.findAllByTitleLike("%" + vo.getTitle() + "%");
+            result.setResultList(sets);
+        } else {
+            List<ArticleEntity> sets = articleRepository.findAll(new Sort(Sort.Direction.DESC, "createTime"));
             result.setResultList(sets);
         }
         return result;
