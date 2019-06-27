@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
         entity.setUpdateTime(vo.getUpdateTime());
         entity.setStatus(vo.getStatus());
         entity.setNote(StringUtil.isNullOrEmpty(vo.getNote()) ? "" : vo.getNote());
+        entity.setDeleteFlag(0);
         projectRepository.save(entity).toString();
         result.setResult("success");
         return result;
@@ -44,32 +46,38 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public CommonDTO<ProjectEntity> getProject(ProjectVO vo) {
         CommonDTO<ProjectEntity> result = new CommonDTO<>();
+        List<ProjectEntity> sets = new ArrayList<>();
         if (!StringUtil.isNullOrEmpty(vo.getId())) {
             Optional<ProjectEntity> set = projectRepository.findById(vo.getId());
-            result.setResult(set.get());
+            sets.add(set.get());
         } else if (!StringUtil.isNullOrEmpty(vo.getProjectName())) {
-            List<ProjectEntity> sets = projectRepository.findAllByProjectNameLike("%" + vo.getProjectName() + "%", new Sort(Sort.Direction.DESC, "deadline"));
-            result.setResultList(sets);
+            sets = projectRepository.findAllByProjectNameLike("%" + vo.getProjectName() + "%", new Sort(Sort.Direction.DESC, "deadline"));
         } else if (!StringUtil.isNullOrEmpty(vo.getModuleName())) {
-            List<ProjectEntity> sets = projectRepository.findAllByModuleNameLike("%" + vo.getModuleName() + "%", new Sort(Sort.Direction.DESC, "deadline"));
-            result.setResultList(sets);
+            sets = projectRepository.findAllByModuleNameLike("%" + vo.getModuleName() + "%", new Sort(Sort.Direction.DESC, "deadline"));
         } else if (!StringUtil.isNullOrEmpty(vo.getDeadline())) {
-            List<ProjectEntity> sets = projectRepository.findAllByDeadline(vo.getDeadline());
-            result.setResultList(sets);
+            sets = projectRepository.findAllByDeadline(vo.getDeadline());
         } else if (null != vo.getStatus()) {
-            List<ProjectEntity> sets = projectRepository.findAllByStatus(vo.getStatus(), new Sort(Sort.Direction.DESC, "deadline"));
-            result.setResultList(sets);
+            sets = projectRepository.findAllByStatus(vo.getStatus(), new Sort(Sort.Direction.DESC, "deadline"));
         } else {
-            List<ProjectEntity> sets = projectRepository.findAll(new Sort(Sort.Direction.DESC, "deadline"));
+            sets = projectRepository.findAll(new Sort(Sort.Direction.DESC, "deadline"));
             result.setResultList(sets);
         }
+        List<ProjectEntity> list = new ArrayList<>();
+        sets.forEach(o -> {
+            if (o.getDeleteFlag() == 0) {
+                list.add(o);
+            }
+        });
+        result.setResultList(list);
         return result;
     }
 
     @Override
     public CommonDTO<ProjectEntity> deleteProject(ProjectVO vo) {
         CommonDTO<ProjectEntity> result = new CommonDTO<>();
-        projectRepository.deleteById(vo.getId());
+        Optional<ProjectEntity> entity = projectRepository.findById(vo.getId());
+        entity.get().setDeleteFlag(1);
+        projectRepository.saveAndFlush(entity.get());
         return result;
     }
 
@@ -77,8 +85,24 @@ public class ProjectServiceImpl implements ProjectService {
     public CommonDTO<String> updateStatus(ProjectVO vo) {
         CommonDTO<String> result = new CommonDTO<>();
         Optional<ProjectEntity> entity = projectRepository.findById(vo.getId());
-        entity.get().setStatus(vo.getStatus());
-        entity.get().setUpdateTime(vo.getUpdateTime());
+        if (null != vo.getStatus()) {
+            entity.get().setStatus(vo.getStatus());
+        }
+        if (!StringUtil.isNullOrEmpty(vo.getProjectName())) {
+            entity.get().setProjectName(vo.getProjectName());
+        }
+        if (!StringUtil.isNullOrEmpty(vo.getModuleName())) {
+            entity.get().setModuleName(vo.getModuleName());
+        }
+        if (!StringUtil.isNullOrEmpty(vo.getDeadline())) {
+            entity.get().setDeadline(vo.getDeadline());
+        }
+        if (!StringUtil.isNullOrEmpty(vo.getNote())) {
+            entity.get().setNote(vo.getNote());
+        }
+        if (!StringUtil.isNullOrEmpty(vo.getUpdateTime())) {
+            entity.get().setUpdateTime(vo.getUpdateTime());
+        }
         projectRepository.saveAndFlush(entity.get());
         result.setResult("success");
         return result;

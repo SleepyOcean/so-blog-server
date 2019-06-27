@@ -41,4 +41,7 @@ public class ProjectEntity {
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "delete_flag")
+    private Integer deleteFlag;
 }
