@@ -7,6 +7,8 @@ import com.sleepy.blog.vo.PostVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 /**
  * 文章发布控制器
  *
@@ -21,7 +23,7 @@ public class PostController {
     PostService postService;
 
     @PostMapping("/save")
-    public CommonDTO<String> save(@RequestBody PostVO vo) {
+    public CommonDTO<String> save(@RequestBody PostVO vo) throws ParseException {
         return postService.saveArticle(vo);
     }
 

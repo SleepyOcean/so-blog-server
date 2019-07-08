@@ -41,7 +41,6 @@ public class ControllerInterceptor {
             result = (CommonDTO<Object>) point.proceed();
             result.setStatus(200);
             result.setTimeout((double) (System.currentTimeMillis() - startTime) / 1000);
-            log.info("Controller拦截器耗时：" + (System.currentTimeMillis() - startTime) + "ms");
         } catch (Exception e) {
             e.printStackTrace();
             result.setStatus(503);

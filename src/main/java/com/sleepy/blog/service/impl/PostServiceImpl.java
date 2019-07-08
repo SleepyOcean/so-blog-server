@@ -1,15 +1,20 @@
 package com.sleepy.blog.service.impl;
 
+import com.google.common.collect.Lists;
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.repository.ArticleRepository;
 import com.sleepy.blog.service.PostService;
 import com.sleepy.blog.util.StringUtil;
 import com.sleepy.blog.vo.PostVO;
+import io.searchbox.client.JestClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,19 +25,23 @@ import java.util.Optional;
  * @create 2019-04-20 13:26
  */
 @Service
+@Slf4j
 public class PostServiceImpl implements PostService {
     @Autowired
     ArticleRepository articleRepository;
+    @Autowired
+    JestClient jestClient;
+
 
     @Override
-    public CommonDTO<String> saveArticle(PostVO vo) {
+    public CommonDTO<String> saveArticle(PostVO vo) throws ParseException {
         CommonDTO<String> result = new CommonDTO<>();
         ArticleEntity entity = new ArticleEntity();
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
-        entity.setCreateTime(vo.getDate());
+        entity.setCreateTime(DateFormat.getDateInstance().parse(vo.getDate()));
         entity.setTags(vo.getTags());
-        articleRepository.save(entity).toString();
+        articleRepository.index(entity);
         result.setResult("success");
         return result;
     }
@@ -47,8 +56,8 @@ public class PostServiceImpl implements PostService {
             List<ArticleEntity> sets = articleRepository.findAllByTitleLike("%" + vo.getTitle() + "%");
             result.setResultList(sets);
         } else {
-            List<ArticleEntity> sets = articleRepository.findAll(new Sort(Sort.Direction.DESC, "createTime"));
-            result.setResultList(sets);
+            Iterable<ArticleEntity> sets = articleRepository.findAll(new Sort(Sort.Direction.DESC, "createTime"));
+            result.setResultList(Lists.newArrayList(sets));
         }
         return result;
     }

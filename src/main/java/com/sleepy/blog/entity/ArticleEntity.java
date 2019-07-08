@@ -2,8 +2,10 @@ package com.sleepy.blog.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import java.util.Date;
 
 /**
  * 博客文章表
@@ -12,27 +14,19 @@ import javax.persistence.*;
  * @create 2019-04-14 14:28
  */
 @Data
-@Entity
-@Table(name = "so_article")
+@Document(indexName = "so_blog", type = "so_article")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class ArticleEntity {
-    @Id
     @GeneratedValue(generator = "jpa-uuid")
-    @Column(length = 32)
     private String id;
 
-    @Column(name = "title")
     private String title;
 
-    @Column(name = "content", columnDefinition = "text")
     private String content;
 
-    @Column(name = "update_time")
-    private String updateTime;
+    private Date updateTime;
 
-    @Column(name = "create_time")
-    private String createTime;
+    private Date createTime;
 
-    @Column(name = "tags")
     private String tags;
 }

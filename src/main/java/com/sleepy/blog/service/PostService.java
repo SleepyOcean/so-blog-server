@@ -4,6 +4,8 @@ import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.vo.PostVO;
 
+import java.text.ParseException;
+
 /**
  * 文章发布服务
  *
@@ -17,8 +19,9 @@ public interface PostService {
      *
      * @param vo
      * @return
+     * @throws ParseException
      */
-    CommonDTO<String> saveArticle(PostVO vo);
+    CommonDTO<String> saveArticle(PostVO vo) throws ParseException;
 
     /**
      * 获取文章
