@@ -3,8 +3,11 @@ package com.sleepy.blog.service.impl;
 import com.google.common.collect.Lists;
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.ArticleEntity;
+import com.sleepy.blog.entity.TagEntity;
 import com.sleepy.blog.repository.ArticleRepository;
+import com.sleepy.blog.repository.TagRepository;
 import com.sleepy.blog.service.PostService;
+import com.sleepy.blog.util.DateUtil;
 import com.sleepy.blog.util.StringUtil;
 import com.sleepy.blog.vo.PostVO;
 import io.searchbox.client.JestClient;
@@ -13,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,8 @@ public class PostServiceImpl implements PostService {
     @Autowired
     ArticleRepository articleRepository;
     @Autowired
+    TagRepository tagRepository;
+    @Autowired
     JestClient jestClient;
 
 
@@ -39,10 +43,20 @@ public class PostServiceImpl implements PostService {
         ArticleEntity entity = new ArticleEntity();
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
-        entity.setCreateTime(DateFormat.getDateInstance().parse(vo.getDate()));
+        entity.setCreateTime(DateUtil.toDate(vo.getDate(), DateUtil.DEFAULT_DATETIME_PATTERN));
         entity.setTags(vo.getTags());
         articleRepository.index(entity);
+
+        // 存储文章标签
+        String[] tags = vo.getTags().split(",");
+        for (int i = 0; i < tags.length; i++) {
+            TagEntity tag = new TagEntity();
+            tag.setTagName(tags[i]);
+            tag.setArticleId(entity.getId());
+            tagRepository.save(tag);
+        }
         result.setResult("success");
+
         return result;
     }
 
@@ -66,6 +80,13 @@ public class PostServiceImpl implements PostService {
     public CommonDTO<ArticleEntity> deleteArticle(PostVO vo) {
         CommonDTO<ArticleEntity> result = new CommonDTO<>();
         articleRepository.deleteById(vo.getId());
+        return result;
+    }
+
+    @Override
+    public CommonDTO<String> getTags(PostVO vo) {
+        CommonDTO<String> result = new CommonDTO<>();
+        result.setResultList(tagRepository.findAllTag());
         return result;
     }
 }

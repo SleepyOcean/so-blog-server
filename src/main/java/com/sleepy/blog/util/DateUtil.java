@@ -10,6 +10,8 @@ import java.util.Date;
  * @create 2019-04-26 10:20
  **/
 public class DateUtil {
+    public static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd";
+    public static final String DEFAULT_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 格式化日期
@@ -19,5 +21,22 @@ public class DateUtil {
      */
     public static String dateFormat(Date date) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+    }
+
+    /**
+     * 字符串转日期
+     *
+     * @param dateString
+     * @param dateFormat
+     * @return
+     */
+    public static Date toDate(String dateString, String dateFormat) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat(dateFormat).parse(dateString);
+        } catch (Exception e) {
+            return null;
+        }
+        return date;
     }
 }

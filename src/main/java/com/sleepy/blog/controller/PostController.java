@@ -36,4 +36,9 @@ public class PostController {
     public CommonDTO<ArticleEntity> delete(@RequestBody PostVO vo) {
         return postService.deleteArticle(vo);
     }
+
+    @PostMapping("/tags")
+    public CommonDTO<String> getTags(@RequestBody PostVO vo) {
+        return postService.getTags(vo);
+    }
 }

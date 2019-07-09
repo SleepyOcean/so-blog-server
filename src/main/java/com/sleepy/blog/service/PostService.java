@@ -38,4 +38,12 @@ public interface PostService {
      * @return
      */
     CommonDTO<ArticleEntity> deleteArticle(PostVO vo);
+
+    /**
+     * 获取tags
+     *
+     * @param vo
+     * @return
+     */
+    CommonDTO<String> getTags(PostVO vo);
 }
