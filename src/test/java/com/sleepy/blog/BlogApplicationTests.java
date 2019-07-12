@@ -45,6 +45,7 @@ public class BlogApplicationTests {
         for (int i = 0; i < articleUrls.size(); i++) {
             Document articleDoc = Jsoup.connect(url + articleUrls.get(i) + "?type=2").get();
             System.out.println("good");
+            System.out.println(articleUrls.get(i));
             ArticleEntity entity = new ArticleEntity();
             entity.setTitle(articleDoc.getElementsByClass("blog-title").html());
             entity.setCreateTime(DateUtil.toDate(articleDoc.getElementsByClass("b-time").html(), DateUtil.DEFAULT_DATETIME_PATTERN));
@@ -56,6 +57,9 @@ public class BlogApplicationTests {
             });
             entity.setTags(tagStr.substring(0, tagStr.length() - 1));
             entity.setContent(articleDoc.getElementsByClass("markdown-body").html());
+            entity.setSummary(Jsoup.parse(Jsoup.connect("https://yq.aliyun.com/articles/708486?type=2").get().getElementsByClass("markdown-body").get(0).getElementsByTag("p").get(0).html()).text());
+            entity.setReadCount(Long.parseLong(articleDoc.getElementsByClass("b-watch").html().substring(2)));
+            entity.setSource("转载：云栖社区：url + articleUrls.get(i) + \"?type=2\"");
             articleRepository.index(entity);
             tags.forEach(o -> {
                 TagEntity tag = new TagEntity();
