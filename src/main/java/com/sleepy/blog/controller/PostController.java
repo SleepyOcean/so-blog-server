@@ -1,12 +1,14 @@
 package com.sleepy.blog.controller;
 
 import com.sleepy.blog.dto.CommonDTO;
+import com.sleepy.blog.dto.PostDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.service.PostService;
 import com.sleepy.blog.vo.PostVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 /**
@@ -21,6 +23,16 @@ import java.text.ParseException;
 public class PostController {
     @Autowired
     PostService postService;
+
+    @PostMapping("/hot-articles")
+    public CommonDTO<PostDTO> getHotArticle(@RequestBody PostVO vo) throws IOException {
+        return postService.getHotArticle(vo);
+    }
+
+    @PostMapping("/related-articles")
+    public CommonDTO<PostDTO> getRelatedArticle(@RequestBody PostVO vo) throws IOException {
+        return postService.getRelatedArticle(vo);
+    }
 
     @PostMapping("/save")
     public CommonDTO<String> save(@RequestBody PostVO vo) throws ParseException {

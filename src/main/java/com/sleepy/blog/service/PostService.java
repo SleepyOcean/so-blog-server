@@ -1,9 +1,11 @@
 package com.sleepy.blog.service;
 
 import com.sleepy.blog.dto.CommonDTO;
+import com.sleepy.blog.dto.PostDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.vo.PostVO;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 /**
@@ -14,6 +16,24 @@ import java.text.ParseException;
  */
 public interface PostService {
 
+
+    /**
+     * 获取热门文章
+     *
+     * @param vo
+     * @return
+     * @throws IOException
+     */
+    CommonDTO<PostDTO> getHotArticle(PostVO vo) throws IOException;
+
+    /**
+     * 获取相关文章
+     *
+     * @param vo
+     * @return
+     * @throws IOException
+     */
+    CommonDTO<PostDTO> getRelatedArticle(PostVO vo) throws IOException;
     /**
      * 保存文章
      *

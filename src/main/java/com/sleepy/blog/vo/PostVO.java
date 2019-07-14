@@ -15,4 +15,6 @@ public class PostVO {
     private String content;
     private String tags;
     private String date;
+
+    private Integer size;
 }

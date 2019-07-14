@@ -1,7 +1,10 @@
 package com.sleepy.blog.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.sleepy.blog.dto.CommonDTO;
+import com.sleepy.blog.dto.PostDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.entity.TagEntity;
 import com.sleepy.blog.repository.ArticleRepository;
@@ -11,14 +14,21 @@ import com.sleepy.blog.util.DateUtil;
 import com.sleepy.blog.util.StringUtil;
 import com.sleepy.blog.vo.PostVO;
 import io.searchbox.client.JestClient;
+import io.searchbox.client.JestResult;
+import io.searchbox.core.Search;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 文章发布服务接口实现
@@ -29,6 +39,9 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class PostServiceImpl implements PostService {
+    public static final String INDEX_NAME = "so_blog";
+    public static final String TYPE_NAME = "so_article";
+
     @Autowired
     ArticleRepository articleRepository;
     @Autowired
@@ -36,6 +49,57 @@ public class PostServiceImpl implements PostService {
     @Autowired
     JestClient jestClient;
 
+
+    @Override
+    public CommonDTO<PostDTO> getHotArticle(PostVO vo) throws IOException {
+        CommonDTO<PostDTO> result = new CommonDTO<>();
+        String[] includes = {"id", "title", "readCount"};
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.fetchSource(includes, null);
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        searchSourceBuilder.sort("readCount", SortOrder.DESC);
+        searchSourceBuilder.size(vo.getSize());
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(INDEX_NAME).addType(TYPE_NAME).build();
+        JestResult jestResult = jestClient.execute(search);
+
+        List<PostDTO> resultList = JSON.parseObject(JSON.toJSONString(jestResult.getValue("hits"))).getJSONArray("hits").stream().map(hit -> {
+            PostDTO item = new PostDTO();
+            JSONObject hitObj = JSON.parseObject(hit.toString());
+            item.setId(hitObj.getString("_id"));
+            item.setTitle(hitObj.getJSONObject("_source").getString("title"));
+            item.setReadCount(hitObj.getJSONObject("_source").getLongValue("readCount"));
+            return item;
+        }).collect(Collectors.toList());
+
+        result.setResultList(resultList);
+        return result;
+    }
+
+    @Override
+    public CommonDTO<PostDTO> getRelatedArticle(PostVO vo) throws IOException {
+        // TODO 相关文章推荐查询：按照tags的匹配度查询排序（目前未实现）
+        CommonDTO<PostDTO> result = new CommonDTO<>();
+        String[] includes = {"id", "title", "summary"};
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.fetchSource(includes, null);
+        searchSourceBuilder.query(QueryBuilders.termsQuery("tag", vo.getTags().split(",")));
+        searchSourceBuilder.sort("readCount", SortOrder.DESC);
+        searchSourceBuilder.size(vo.getSize());
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(INDEX_NAME).addType(TYPE_NAME).build();
+        JestResult jestResult = jestClient.execute(search);
+
+        List<PostDTO> resultList = JSON.parseObject(JSON.toJSONString(jestResult.getValue("hits"))).getJSONArray("hits").stream().map(hit -> {
+            PostDTO item = new PostDTO();
+            JSONObject hitObj = JSON.parseObject(hit.toString());
+            item.setId(hitObj.getString("_id"));
+            item.setTitle(hitObj.getJSONObject("_source").getString("title"));
+            item.setSummary(hitObj.getJSONObject("_source").getString("summary"));
+            return item;
+        }).collect(Collectors.toList());
+
+        result.setResultList(resultList);
+        return result;
+    }
 
     @Override
     public CommonDTO<String> saveArticle(PostVO vo) throws ParseException {

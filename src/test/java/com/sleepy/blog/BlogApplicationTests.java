@@ -36,7 +36,6 @@ public class BlogApplicationTests {
     }
 
     private void getArticle() throws IOException {
-
         String url = "https://yq.aliyun.com";
         Document doc = Jsoup.connect(url + "/articles").get();
         List<String> articleUrls = doc.getElementsByClass("item-box")
