@@ -77,12 +77,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public CommonDTO<PostDTO> getRelatedArticle(PostVO vo) throws IOException {
-        // TODO 相关文章推荐查询：按照tags的匹配度查询排序（目前未实现）
+        List<String> articleIDs = tagRepository.findArticleIdsByTags(vo.getTags().split(","));
+
         CommonDTO<PostDTO> result = new CommonDTO<>();
         String[] includes = {"id", "title", "summary"};
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.fetchSource(includes, null);
-        searchSourceBuilder.query(QueryBuilders.termsQuery("tag", vo.getTags().split(",")));
+        searchSourceBuilder.query(QueryBuilders.termsQuery("_id", articleIDs));
         searchSourceBuilder.sort("readCount", SortOrder.DESC);
         searchSourceBuilder.size(vo.getSize());
         Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(INDEX_NAME).addType(TYPE_NAME).build();
