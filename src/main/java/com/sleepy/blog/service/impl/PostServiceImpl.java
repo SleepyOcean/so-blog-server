@@ -21,6 +21,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -134,8 +137,13 @@ public class PostServiceImpl implements PostService {
         } else if (!StringUtil.isNullOrEmpty(vo.getTitle())) {
             List<ArticleEntity> sets = articleRepository.findAllByTitleLike("%" + vo.getTitle() + "%");
             result.setResultList(sets);
+        } else if (null != vo.getSize() && null != vo.getStart()) {
+            Pageable pageable = PageRequest.of(vo.getStart(), vo.getSize(), new Sort(Sort.Direction.DESC, "createTime"));
+            Page<ArticleEntity> sets = articleRepository.findAll(pageable);
+            result.setTotal(sets.getTotalElements());
+            result.setResultList(sets.getContent());
         } else {
-            Iterable<ArticleEntity> sets = articleRepository.findAll(new Sort(Sort.Direction.DESC, "createTime"));
+            Iterable<ArticleEntity> sets = articleRepository.findAll();
             result.setResultList(Lists.newArrayList(sets));
         }
         return result;

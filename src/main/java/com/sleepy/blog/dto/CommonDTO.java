@@ -16,6 +16,7 @@ public class CommonDTO<T> {
     private T result;
     private List<T> resultList;
     private Map<String, Object> extra;
+    private Long total;
     private Integer status;
     private String message;
     private Double timeout;

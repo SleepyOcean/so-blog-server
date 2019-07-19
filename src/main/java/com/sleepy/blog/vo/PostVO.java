@@ -17,4 +17,5 @@ public class PostVO {
     private String date;
 
     private Integer size;
+    private Integer start;
 }
