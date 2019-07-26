@@ -44,6 +44,15 @@ public interface PostService {
     CommonDTO<String> saveArticle(PostVO vo) throws ParseException;
 
     /**
+     * 搜索文章
+     *
+     * @param vo
+     * @return
+     * @throws IOException
+     */
+    CommonDTO<PostDTO> searchArticle(PostVO vo) throws IOException;
+
+    /**
      * 获取文章
      *
      * @param vo

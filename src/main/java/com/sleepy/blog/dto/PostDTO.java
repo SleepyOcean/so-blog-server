@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 文章DTO
@@ -54,4 +55,7 @@ public class PostDTO {
 
     @ApiModelProperty("博客私密设置，0：公开， 1：私密")
     private Integer privacy;
+
+    @ApiModelProperty("搜索结果")
+    private List<String> searchResult;
 }

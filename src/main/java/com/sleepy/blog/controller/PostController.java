@@ -39,6 +39,11 @@ public class PostController {
         return postService.saveArticle(vo);
     }
 
+    @PostMapping("/search")
+    public CommonDTO<PostDTO> search(@RequestBody PostVO vo) throws IOException {
+        return postService.searchArticle(vo);
+    }
+
     @PostMapping("/get")
     public CommonDTO<ArticleEntity> get(@RequestBody PostVO vo) {
         return postService.getArticle(vo);

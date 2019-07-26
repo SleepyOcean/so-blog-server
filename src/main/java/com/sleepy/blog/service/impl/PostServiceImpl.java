@@ -19,6 +19,7 @@ import io.searchbox.core.Search;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -80,13 +81,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public CommonDTO<PostDTO> getRelatedArticle(PostVO vo) throws IOException {
-        List<String> articleIDs = tagRepository.findArticleIdsByTags(vo.getTags().split(","));
+        List<String> articleIds = tagRepository.findArticleIdsByTags(vo.getTags().split(","));
 
         CommonDTO<PostDTO> result = new CommonDTO<>();
         String[] includes = {"id", "title", "summary"};
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.fetchSource(includes, null);
-        searchSourceBuilder.query(QueryBuilders.termsQuery("_id", articleIDs));
+        searchSourceBuilder.query(QueryBuilders.termsQuery("_id", articleIds));
         searchSourceBuilder.sort("readCount", SortOrder.DESC);
         searchSourceBuilder.size(vo.getSize());
         Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(INDEX_NAME).addType(TYPE_NAME).build();
@@ -125,6 +126,34 @@ public class PostServiceImpl implements PostService {
         }
         result.setResult("success");
 
+        return result;
+    }
+
+    @Override
+    public CommonDTO<PostDTO> searchArticle(PostVO vo) throws IOException {
+        CommonDTO<PostDTO> result = new CommonDTO<>();
+        String[] includes = {"id", "title"};
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.fetchSource(includes, null);
+        searchSourceBuilder.query(QueryBuilders.matchQuery("content", vo.getKeyword()));
+        searchSourceBuilder.sort("_score", SortOrder.DESC);
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.field("content");
+        highlightBuilder.preTags("<span style='color: #ffa500;font-weight: bold;font-size: 16px !important;'>").postTags("</span>");
+        searchSourceBuilder.highlighter(highlightBuilder);
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(INDEX_NAME).addType(TYPE_NAME).build();
+        JestResult jestResult = jestClient.execute(search);
+
+        List<PostDTO> resultList = JSON.parseObject(JSON.toJSONString(jestResult.getValue("hits"))).getJSONArray("hits").stream().map(hit -> {
+            PostDTO item = new PostDTO();
+            JSONObject hitObj = JSON.parseObject(hit.toString());
+            item.setId(hitObj.getString("_id"));
+            item.setTitle(hitObj.getJSONObject("_source").getString("title"));
+            item.setSearchResult(hitObj.getJSONObject("highlight").getJSONArray("content").toJavaList(String.class));
+            return item;
+        }).collect(Collectors.toList());
+
+        result.setResultList(resultList);
         return result;
     }
 
