@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
@@ -75,11 +76,10 @@ public class BlogApplicationTests {
             Document doc = Jsoup.connect(url + j + ".html").get();
             List<String> articleUrls = doc.getElementsByClass("post-title")
                     .stream().map(o -> o.getElementsByTag("a").get(0).attr("href")).collect(Collectors.toList());
-
+            System.out.println("loading meituan article");
             for (int i = 0; i < articleUrls.size(); i++) {
                 Document articleDoc = Jsoup.connect(articleUrls.get(i)).get();
-                System.out.println("loading meituan article");
-                System.out.println(articleUrls.get(i));
+                System.out.println((i + 1) + ":\t" + articleUrls.get(i));
                 ArticleEntity entity = new ArticleEntity();
                 entity.setTitle(articleDoc.getElementsByClass("post-title").get(0).getElementsByTag("a").html());
                 String date = Jsoup.parse(articleDoc.getElementsByClass("m-post-date").get(0).html()).text();
@@ -89,7 +89,7 @@ public class BlogApplicationTests {
                 createTime.append("-");
                 createTime.append(dateStrs[1]);
                 createTime.append("-");
-                createTime.append(dateStrs[0]);
+                createTime.append(dateStrs[2]);
                 createTime.append(" 00:00:00");
                 entity.setCreateTime(DateUtil.toDate(createTime.toString(), DateUtil.DEFAULT_DATETIME_PATTERN));
                 String[] tags = articleDoc.getElementsByClass("tag-links").stream().map(o -> o.getElementsByTag("a").html()).collect(Collectors.toList()).get(0).split("\n");
@@ -101,7 +101,7 @@ public class BlogApplicationTests {
                 entity.setTags(tagStr.substring(0, tagStr.length() - 1));
                 entity.setContent(articleDoc.getElementsByClass("content").html());
                 entity.setSummary(Jsoup.parse(articleDoc.getElementsByClass("content").get(0).getElementsByTag("p").get(0).html()).text());
-                entity.setReadCount(0L);
+                entity.setReadCount(Long.parseLong((new Random()).nextInt(100000) + ""));
                 entity.setSource("转载：美团技术团队：" + articleUrls.get(i));
                 articleRepository.index(entity);
                 for (String o : tags) {
