@@ -166,6 +166,7 @@ public class PostServiceImpl implements PostService {
         } else if (!StringUtil.isNullOrEmpty(vo.getTitle())) {
             List<ArticleEntity> sets = articleRepository.findAllByTitleLike("%" + vo.getTitle() + "%");
             result.setResultList(sets);
+            result.setTotal(Integer.valueOf(sets.size()).longValue());
         } else if (null != vo.getSize() && null != vo.getStart()) {
             Pageable pageable = PageRequest.of(vo.getStart(), vo.getSize(), new Sort(Sort.Direction.DESC, "createTime"));
             Page<ArticleEntity> sets = articleRepository.findAll(pageable);
