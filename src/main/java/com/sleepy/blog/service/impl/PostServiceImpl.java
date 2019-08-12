@@ -114,6 +114,10 @@ public class PostServiceImpl implements PostService {
         entity.setContent(vo.getContent());
         entity.setCreateTime(DateUtil.toDate(vo.getDate(), DateUtil.DEFAULT_DATETIME_PATTERN));
         entity.setTags(vo.getTags());
+        if (!StringUtil.isNullOrEmpty(vo.getId())) {
+            entity.setId(vo.getId());
+            articleRepository.save(entity);
+        }
         articleRepository.index(entity);
 
         // 存储文章标签
