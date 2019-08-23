@@ -166,6 +166,8 @@ public class PostServiceImpl implements PostService {
         CommonDTO<ArticleEntity> result = new CommonDTO<>();
         if (!StringUtil.isNullOrEmpty(vo.getId())) {
             Optional<ArticleEntity> set = articleRepository.findById(vo.getId());
+            set.get().setReadCount(set.get().getReadCount() + 1L);
+            articleRepository.save(set.get());
             result.setResult(set.get());
         } else if (!StringUtil.isNullOrEmpty(vo.getTitle())) {
             List<ArticleEntity> sets = articleRepository.findAllByTitleLike("%" + vo.getTitle() + "%");

@@ -49,16 +49,16 @@ public class ArticleEntity {
     private String tags;
 
     @ApiModelProperty("阅读数")
-    private Long readCount;
+    private Long readCount = 0L;
 
     @ApiModelProperty("评论数")
-    private Long commentCount;
+    private Long commentCount = 0L;
 
     @ApiModelProperty("转发数")
-    private Long shareCount;
+    private Long shareCount = 0L;
 
     @ApiModelProperty("热度")
-    private Long hotRate;
+    private Long hotRate = 0L;
 
     @ApiModelProperty("专栏")
     private String collection;
@@ -67,5 +67,5 @@ public class ArticleEntity {
     private String source;
 
     @ApiModelProperty("博客私密设置，0：公开， 1：私密")
-    private Integer privacy;
+    private Integer privacy = 0;
 }
