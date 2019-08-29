@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ControllerInterceptor {
 
-    @Pointcut("execution(public * com.sleepy.blog.controller.*.*(..))")
+    @Pointcut("execution(public com.sleepy.blog.dto.CommonDTO* com.sleepy.blog.controller.*.*(..))")
     public void controllerAnnotationPointCut() {
     }
 
