@@ -1,6 +1,7 @@
 package com.sleepy.blog.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -38,5 +39,11 @@ public class DateUtil {
             return null;
         }
         return date;
+    }
+
+    public static Date getDateWithCurrent(int amount, int unit) {
+        Calendar c = Calendar.getInstance();
+        c.add(unit, amount);
+        return c.getTime();
     }
 }
