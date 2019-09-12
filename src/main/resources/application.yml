@@ -27,3 +27,7 @@ spring:
     elasticsearch:
       cluster-name: my-application
       cluster-nodes: localhost:9300
+logging:
+  level:
+    # 全局等级
+    root: warn
