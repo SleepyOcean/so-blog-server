@@ -10,10 +10,28 @@ import java.io.*;
  **/
 public class FileUtil {
 
+    public static String readToString(String fileName) throws IOException {
+        String encoding = "UTF-8";
+        File file = new File(fileName);
+        Long filelength = file.length();
+        byte[] filecontent = new byte[filelength.intValue()];
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            in.read(filecontent);
+            return new String(filecontent, encoding);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            in.close();
+        }
+    }
+
     /**
      * 文本写入文件操作类
      */
-    static class StringWriter {
+    public static class StringWriter {
         File file;
         FileOutputStream fos;
 
@@ -66,5 +84,4 @@ public class FileUtil {
             }
         }
     }
-
 }

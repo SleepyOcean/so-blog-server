@@ -1,10 +1,16 @@
 package com.sleepy.blog;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.entity.TagEntity;
 import com.sleepy.blog.repository.ArticleRepository;
 import com.sleepy.blog.repository.TagRepository;
 import com.sleepy.blog.util.DateUtil;
+import com.sleepy.blog.util.FileUtil;
+import com.sleepy.blog.util.HttpUtil;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.Test;
@@ -28,12 +34,8 @@ public class BlogApplicationTests {
     TagRepository tagRepository;
 
     @Test
-    public void contextLoads() {
-        try {
-            getArticleFromMeituan();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void contextLoads() throws Exception {
+        getArticleFromToutiao();
     }
 
     private void getArticle() throws IOException {
@@ -110,6 +112,50 @@ public class BlogApplicationTests {
                     tag.setArticleId(entity.getId());
                     tagRepository.save(tag);
                 }
+            }
+        }
+    }
+
+    private void getArticleFromToutiao() throws Exception {
+        String html = FileUtil.readToString("E:\\Code\\Web\\source\\all\\沉睡的海洋的头条主页 - 今日头条(www.toutiao.com).html");
+        Document doc = Jsoup.parse(html);
+        List<String> articleUrls = doc.getElementsByClass("lbox")
+                .stream().map(o -> o.getElementsByTag("a").get(0).attr("href").replace("https://www.toutiao.com/item/", "https://www.toutiao.com/i")).collect(Collectors.toList());
+
+        for (int i = 0; i < articleUrls.size(); i++) {
+            Document articleDoc = HttpUtil.getHtmlPageResponseAsDocument(articleUrls.get(i));
+            String articleInfoHtml = articleDoc.body().getElementsByTag("script").get(3).html();
+            JSONObject articleObject = JSON.parseObject("{"
+                    + articleInfoHtml.substring(33, articleInfoHtml.length() - 12)
+                    .replace(".slice(6, -6).replace(/<br \\/>/ig, '')", "")
+                    .replace(".slice(6, -6)", "").replace("\\", "\\\\") + "}");
+
+            System.out.println(articleUrls.get(i) + "   good");
+            String content = StringEscapeUtils.unescapeEcmaScript(StringEscapeUtils.unescapeHtml4(articleInfoHtml.substring(articleInfoHtml.indexOf("content") + 10, articleInfoHtml.lastIndexOf(".slice(6, -6),") - 1))).replaceAll("&gt;", ">").replaceAll("&lt;", "<");
+            String title = StringEscapeUtils.unescapeHtml4(articleObject.getJSONObject("articleInfo").getString("title")).replace("\\\\", "\\");
+            String summary = StringEscapeUtils.unescapeHtml4(articleObject.getJSONObject("shareInfo").getString("abstract").replace("\\\\", "\\")).replaceAll("&gt;", ">").replaceAll("&lt;", "<");
+
+            ArticleEntity entity = new ArticleEntity();
+            entity.setTitle(title.substring(1, title.length() - 1));
+            entity.setCreateTime(DateUtil.toDate(articleObject.getJSONObject("articleInfo").getJSONObject("subInfo").getString("time"), DateUtil.DEFAULT_DATETIME_PATTERN));
+            JSONArray tagsArray = articleObject.getJSONObject("articleInfo").getJSONObject("tagInfo").getJSONArray("tags");
+            StringBuilder tagStr = new StringBuilder();
+            for (int j = 0; j < tagsArray.size(); j++) {
+                tagStr.append(tagsArray.getJSONObject(j).getString("name"));
+                tagStr.append(",");
+            }
+            entity.setTags(tagStr.length() > 1 ? tagStr.substring(0, tagStr.length() - 1) : "");
+            entity.setContent(content.substring(1, content.length() - 1));
+            entity.setSummary(summary.substring(1, summary.length() - 1));
+            entity.setReadCount(Long.parseLong(articleObject.getJSONObject("shareInfo").getString("commentCount")));
+            entity.setSource("转载：今日头条：url:" + articleUrls.get(i));
+            articleRepository.index(entity);
+
+            for (int j = 0; j < tagsArray.size(); j++) {
+                TagEntity tag = new TagEntity();
+                tag.setTagName(tagsArray.getJSONObject(j).getString("name"));
+                tag.setArticleId(entity.getId());
+                tagRepository.save(tag);
             }
         }
     }
