@@ -10,6 +10,7 @@ import com.sleepy.blog.repository.TagRepository;
 import com.sleepy.blog.util.DateUtil;
 import com.sleepy.blog.util.FileUtil;
 import com.sleepy.blog.util.HttpUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class BlogApplicationTests {
 
     @Autowired
@@ -123,12 +125,19 @@ public class BlogApplicationTests {
                 .stream().map(o -> o.getElementsByTag("a").get(0).attr("href").replace("https://www.toutiao.com/item/", "https://www.toutiao.com/i")).collect(Collectors.toList());
 
         for (int i = 0; i < articleUrls.size(); i++) {
-            Document articleDoc = HttpUtil.getHtmlPageResponseAsDocument(articleUrls.get(i));
+            Document articleDoc;
+            try {
+                articleDoc = HttpUtil.getHtmlPageResponseAsDocument(articleUrls.get(i));
+            } catch (Exception e) {
+                log.error("访问头条失败： " + e.getMessage());
+                continue;
+            }
             String articleInfoHtml = articleDoc.body().getElementsByTag("script").get(3).html();
             JSONObject articleObject = JSON.parseObject("{"
                     + articleInfoHtml.substring(33, articleInfoHtml.length() - 12)
                     .replace(".slice(6, -6).replace(/<br \\/>/ig, '')", "")
-                    .replace(".slice(6, -6)", "").replace("\\", "\\\\") + "}");
+                    .replace(".slice(6, -6)", "").replace("\\", "\\\\")
+                    .replace("\\\\\"", "\\\"") + "}");
 
             System.out.println(articleUrls.get(i) + "   good");
             String content = StringEscapeUtils.unescapeEcmaScript(StringEscapeUtils.unescapeHtml4(articleInfoHtml.substring(articleInfoHtml.indexOf("content") + 10, articleInfoHtml.lastIndexOf(".slice(6, -6),") - 1))).replaceAll("&gt;", ">").replaceAll("&lt;", "<");

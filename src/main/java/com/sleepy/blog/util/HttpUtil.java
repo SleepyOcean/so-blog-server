@@ -29,13 +29,13 @@ import java.io.IOException;
  */
 public class HttpUtil {
     /**
-     * 请求超时时间,默认20000ms
+     * 请求超时时间,默认1000ms
      */
-    private static int TIME_OUT = 100000;
+    private static int TIME_OUT = 1000;
     /**
-     * 等待异步JS执行时间,默认20000ms
+     * 等待异步JS执行时间,默认1000ms
      */
-    private static int WAIT_SECOND = 10000;
+    private static int WAIT_SECOND = 1000;
 
     /**
      * 模拟get请求接口返回json数据格式
