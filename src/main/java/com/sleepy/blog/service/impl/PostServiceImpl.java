@@ -112,6 +112,7 @@ public class PostServiceImpl implements PostService {
         ArticleEntity entity = new ArticleEntity();
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
+        entity.setSummary(vo.getSummary());
         entity.setCreateTime(DateUtil.toDate(vo.getDate(), DateUtil.DEFAULT_DATETIME_PATTERN));
         entity.setTags(vo.getTags());
         if (!StringUtil.isNullOrEmpty(vo.getId())) {

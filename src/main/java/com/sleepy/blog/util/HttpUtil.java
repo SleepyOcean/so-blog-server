@@ -1,5 +1,7 @@
 package com.sleepy.blog.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -10,10 +12,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 
 /**
  * Http请求工具类
@@ -158,5 +164,33 @@ public class HttpUtil {
      */
     public static Document getHtmlPageResponseAsDocument(String url) throws Exception {
         return parseHtmlToDoc(getHtmlPageResponse(url));
+    }
+
+
+    public static String sendPost(String url, String jsonParams) throws IOException {
+        HttpPost httpPost = new HttpPost(url);
+        CloseableHttpClient client = HttpClients.createDefault();
+        String respContent = null;
+
+        JSONObject params = JSON.parseObject(jsonParams);
+        //解决中文乱码问题
+        StringEntity entity = new StringEntity(params.toString(), "utf-8");
+        entity.setContentEncoding("UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+        System.out.println();
+
+        HttpResponse resp = client.execute(httpPost);
+        if (resp.getStatusLine().getStatusCode() == 200) {
+            HttpEntity he = resp.getEntity();
+            respContent = EntityUtils.toString(he, "UTF-8");
+        }
+        return respContent;
+    }
+
+    public static void main(String[] args) throws IOException {
+        String url = "http://localhost:8092/haiyan-server/resource/vehicles/vehicle-concealed/analysis";
+        String params = "{\"startOccTime\":\"2019-08-21 17:25:09\",\"endOccTime\":\"2019-08-28 17:25:09\",\"beforeRetrospectDay\":\"2\",\"beforeLimitTimes\":\"1\",\"afterRetrospectDay\":\"2\",\"afterLimitTimes\":\"1000\",\"deviceLimit\":[\"32050500011120000862\",\"32050500011120000934\",\"32050500011120000928\",\"32050500011120000930\",\"32050500011120000892\",\"32050500011120000856\",\"32050500011120000858\",\"32050500011120001024\"],\"userName\":\"gehoubao_hy\",\"searchFlag\":1,\"recordStartNo\":0,\"pageRecordNum\":30}";
+        System.out.println(sendPost(url, params));
     }
 }

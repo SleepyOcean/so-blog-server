@@ -13,6 +13,7 @@ public class PostVO {
     private String id;
     private String title;
     private String content;
+    private String summary;
     private String tags;
     private String date;
     private String keyword;
