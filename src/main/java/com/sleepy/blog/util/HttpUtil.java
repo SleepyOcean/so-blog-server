@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.sleepy.blog.common.Constant;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -31,11 +32,11 @@ public class HttpUtil {
     /**
      * 请求超时时间,默认1000ms
      */
-    private static int TIME_OUT = 1000;
+    private static int TIME_OUT = 5000;
     /**
      * 等待异步JS执行时间,默认1000ms
      */
-    private static int WAIT_SECOND = 1000;
+    private static int WAIT_SECOND = 5000;
 
     /**
      * 模拟get请求接口返回json数据格式
@@ -181,7 +182,7 @@ public class HttpUtil {
         System.out.println();
 
         HttpResponse resp = client.execute(httpPost);
-        if (resp.getStatusLine().getStatusCode() == 200) {
+        if (resp.getStatusLine().getStatusCode() == Constant.HTTP_STATUS_OK) {
             HttpEntity he = resp.getEntity();
             respContent = EntityUtils.toString(he, "UTF-8");
         }
