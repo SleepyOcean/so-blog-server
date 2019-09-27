@@ -25,12 +25,12 @@ public class PostController {
     PostService postService;
 
     @PostMapping("/hot-articles")
-    public CommonDTO<PostDTO> getHotArticle(@RequestBody PostVO vo) throws IOException {
+    public CommonDTO<ArticleEntity> getHotArticle(@RequestBody PostVO vo) throws IOException {
         return postService.getHotArticle(vo);
     }
 
     @PostMapping("/related-articles")
-    public CommonDTO<PostDTO> getRelatedArticle(@RequestBody PostVO vo) throws IOException {
+    public CommonDTO<ArticleEntity> getRelatedArticle(@RequestBody PostVO vo) throws IOException {
         return postService.getRelatedArticle(vo);
     }
 

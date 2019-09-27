@@ -37,7 +37,7 @@ public class BlogApplicationTests {
 
     @Test
     public void contextLoads() throws Exception {
-        getArticleFromToutiao();
+//        getArticleFromToutiao();
     }
 
     private void getArticle() throws IOException {
@@ -63,8 +63,9 @@ public class BlogApplicationTests {
             entity.setContent(articleDoc.getElementsByClass("markdown-body").html());
             entity.setSummary(Jsoup.parse(Jsoup.connect("https://yq.aliyun.com/articles/708486?type=2").get().getElementsByClass("markdown-body").get(0).getElementsByTag("p").get(0).html()).text());
             entity.setReadCount(Long.parseLong(articleDoc.getElementsByClass("b-watch").html().substring(2)));
+            entity.setHotRate((new Random()).nextInt(1000));
             entity.setSource("转载：云栖社区：url + articleUrls.get(i) + \"?type=2\"");
-            articleRepository.index(entity);
+            articleRepository.save(entity);
             tags.forEach(o -> {
                 TagEntity tag = new TagEntity();
                 tag.setTagName(o);
@@ -106,8 +107,9 @@ public class BlogApplicationTests {
                 entity.setContent(articleDoc.getElementsByClass("content").html());
                 entity.setSummary(Jsoup.parse(articleDoc.getElementsByClass("content").get(0).getElementsByTag("p").get(0).html()).text());
                 entity.setReadCount(Long.parseLong((new Random()).nextInt(100000) + ""));
+                entity.setHotRate((new Random()).nextInt(1000));
                 entity.setSource("转载：美团技术团队：" + articleUrls.get(i));
-                articleRepository.index(entity);
+                articleRepository.save(entity);
                 for (String o : tags) {
                     TagEntity tag = new TagEntity();
                     tag.setTagName(o);
@@ -145,6 +147,7 @@ public class BlogApplicationTests {
             String summary = StringEscapeUtils.unescapeHtml4(articleObject.getJSONObject("shareInfo").getString("abstract").replace("\\\\", "\\")).replaceAll("&gt;", ">").replaceAll("&lt;", "<");
 
             ArticleEntity entity = new ArticleEntity();
+            entity.setCoverImg(articleObject.getJSONObject("articleInfo").getString("coverImg"));
             entity.setTitle(title.substring(1, title.length() - 1));
             entity.setCreateTime(DateUtil.toDate(articleObject.getJSONObject("articleInfo").getJSONObject("subInfo").getString("time"), DateUtil.DEFAULT_DATETIME_PATTERN));
             JSONArray tagsArray = articleObject.getJSONObject("articleInfo").getJSONObject("tagInfo").getJSONArray("tags");
@@ -157,8 +160,9 @@ public class BlogApplicationTests {
             entity.setContent(content.substring(1, content.length() - 1));
             entity.setSummary(summary.substring(1, summary.length() - 1));
             entity.setReadCount(Long.parseLong(articleObject.getJSONObject("shareInfo").getString("commentCount")));
+            entity.setHotRate((new Random()).nextInt(1000));
             entity.setSource("转载：今日头条：url:" + articleUrls.get(i));
-            articleRepository.index(entity);
+            articleRepository.save(entity);
 
             for (int j = 0; j < tagsArray.size(); j++) {
                 TagEntity tag = new TagEntity();

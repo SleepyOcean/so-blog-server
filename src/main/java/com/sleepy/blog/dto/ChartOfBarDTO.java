@@ -12,4 +12,9 @@ import lombok.Data;
 public class ChartOfBarDTO {
     private String xAxis;
     private String yAxis;
+
+    public ChartOfBarDTO(Object xAxis, Object yAxis) {
+        this.xAxis = xAxis.toString();
+        this.yAxis = yAxis.toString();
+    }
 }

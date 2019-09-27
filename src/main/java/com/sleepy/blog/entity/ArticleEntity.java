@@ -1,16 +1,10 @@
 package com.sleepy.blog.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import javax.persistence.GeneratedValue;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -20,52 +14,55 @@ import java.util.Date;
  * @create 2019-04-14 14:28
  */
 @Data
-@Document(indexName = "so_blog", type = "so_article")
+@Entity
+@Table(name = "so_article")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 @ApiModel("博客文章表")
 public class ArticleEntity {
+    @Id
     @GeneratedValue(generator = "jpa-uuid")
-    @ApiModelProperty("博文ID")
+    @Column(length = 32)
     private String id;
 
-    @ApiModelProperty("博客标题")
+    @Column(name = "title", columnDefinition = "VARCHAR(255) COMMENT '博客标题'")
     private String title;
 
-    @ApiModelProperty("博文摘要")
+    @Column(name = "summary", columnDefinition = "VARCHAR(1024) COMMENT '博客标题'")
     private String summary;
 
-    @ApiModelProperty("博文内容")
+    @Column(name = "content", columnDefinition = "LONGTEXT COMMENT '博文内容'")
     private String content;
 
-    @ApiModelProperty("最后一次更新时间")
-    private String updateTime;
+    @Column(name = "coverImg", columnDefinition = "VARCHAR(255) COMMENT '封面url'")
+    private String coverImg;
 
-    @ApiModelProperty("博文创建时间")
-    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @Column(name = "updateTime", columnDefinition = "DATETIME COMMENT '最后一次更新时间'")
+    private Date updateTime;
+
+    @Column(name = "createTime", columnDefinition = "DATETIME COMMENT '博文创建时间'")
     private Date createTime;
 
-    @ApiModelProperty("博文标签")
+    @Column(name = "tags", columnDefinition = "VARCHAR(255) COMMENT '博文标签'")
     private String tags;
 
-    @ApiModelProperty("阅读数")
+    @Column(name = "readCount", columnDefinition = "BIGINT COMMENT '阅读数'")
     private Long readCount = 0L;
 
-    @ApiModelProperty("评论数")
-    private Long commentCount = 0L;
+    @Column(name = "commentCount", columnDefinition = "INT COMMENT '评论数'")
+    private Integer commentCount = 0;
 
-    @ApiModelProperty("转发数")
-    private Long shareCount = 0L;
+    @Column(name = "shareCount", columnDefinition = "INT COMMENT '转发数'")
+    private Integer shareCount = 0;
 
-    @ApiModelProperty("热度")
-    private Long hotRate = 0L;
+    @Column(name = "hotRate", columnDefinition = "INT COMMENT '热度(赞👍)'")
+    private Integer hotRate = 0;
 
-    @ApiModelProperty("专栏")
+    @Column(name = "collection", columnDefinition = "VARCHAR(255) COMMENT '专栏'")
     private String collection;
 
-    @ApiModelProperty("文章来源 -> 【原创 | 转载：网站名称：url】")
+    @Column(name = "source", columnDefinition = "VARCHAR(255) COMMENT '文章来源 -> 【原创 | 转载：网站名称：url】'")
     private String source;
 
-    @ApiModelProperty("博客私密设置，0：公开， 1：私密")
+    @Column(name = "privacy", columnDefinition = "TINYINT COMMENT '博客私密设置，0：公开， 1：私密'")
     private Integer privacy = 0;
 }

@@ -24,7 +24,7 @@ public interface PostService {
      * @return
      * @throws IOException
      */
-    CommonDTO<PostDTO> getHotArticle(PostVO vo) throws IOException;
+    CommonDTO<ArticleEntity> getHotArticle(PostVO vo) throws IOException;
 
     /**
      * 获取相关文章
@@ -33,7 +33,7 @@ public interface PostService {
      * @return
      * @throws IOException
      */
-    CommonDTO<PostDTO> getRelatedArticle(PostVO vo) throws IOException;
+    CommonDTO<ArticleEntity> getRelatedArticle(PostVO vo) throws IOException;
     /**
      * 保存文章
      *

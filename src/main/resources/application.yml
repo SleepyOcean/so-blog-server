@@ -20,13 +20,6 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
-  elasticsearch:
-    jest:
-      uris: http://localhost:9200
-  data:
-    elasticsearch:
-      cluster-name: my-application
-      cluster-nodes: localhost:9300
 logging:
   level:
     # 全局等级
