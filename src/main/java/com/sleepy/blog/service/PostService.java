@@ -1,7 +1,6 @@
 package com.sleepy.blog.service;
 
 import com.sleepy.blog.dto.CommonDTO;
-import com.sleepy.blog.dto.PostDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.vo.PostVO;
 
@@ -50,7 +49,7 @@ public interface PostService {
      * @return
      * @throws IOException
      */
-    CommonDTO<PostDTO> searchArticle(PostVO vo) throws IOException;
+    CommonDTO<ArticleEntity> searchArticle(PostVO vo) throws IOException;
 
     /**
      * 获取文章

@@ -2,7 +2,6 @@ package com.sleepy.blog.service.impl;
 
 import com.google.common.collect.Lists;
 import com.sleepy.blog.dto.CommonDTO;
-import com.sleepy.blog.dto.PostDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.entity.TagEntity;
 import com.sleepy.blog.repository.ArticleRepository;
@@ -21,9 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 文章发布服务接口实现
@@ -89,12 +86,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public CommonDTO<PostDTO> searchArticle(PostVO vo) throws IOException {
-        CommonDTO<PostDTO> result = new CommonDTO<>();
+    public CommonDTO<ArticleEntity> searchArticle(PostVO vo) throws IOException {
+        CommonDTO<ArticleEntity> result = new CommonDTO<>();
+        Set<ArticleEntity> resultList = new HashSet<>();
+        String[] titles = vo.getKeyword().split("\\s");
+        for (String title : titles) {
+            resultList.addAll(articleRepository.findAllByTitleLike("%" + title + "%"));
+        }
 
-        List<PostDTO> resultList = new ArrayList<>();
-
-        result.setResultList(resultList);
+        resultList.forEach(article -> {
+            for (String title : titles) {
+                article.setTitle(article.getTitle().replaceAll(title, "<span style='font-weight: bold; color: #5D82ED'>" + title + "</span>"));
+            }
+        });
+        result.setResultList(new ArrayList<>(resultList));
         return result;
     }
 

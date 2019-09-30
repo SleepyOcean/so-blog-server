@@ -49,6 +49,13 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, String> 
     @Query(value = "SELECT * FROM so_article ORDER BY hot_rate DESC LIMIT 10", nativeQuery = true)
     List<ArticleEntity> findHotArticleInfo();
 
+    /**
+     * 统计指定时间段内的文章数量
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     @Query(value = "SELECT new com.sleepy.blog.dto.ChartOfBarDTO(a.createTime, COUNT(a.createTime)) " +
             "FROM ArticleEntity as a " +
             "WHERE a.createTime BETWEEN :startTime AND :endTime " +

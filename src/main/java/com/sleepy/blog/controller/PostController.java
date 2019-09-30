@@ -1,7 +1,6 @@
 package com.sleepy.blog.controller;
 
 import com.sleepy.blog.dto.CommonDTO;
-import com.sleepy.blog.dto.PostDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.service.PostService;
 import com.sleepy.blog.vo.PostVO;
@@ -40,7 +39,7 @@ public class PostController {
     }
 
     @PostMapping("/search")
-    public CommonDTO<PostDTO> search(@RequestBody PostVO vo) throws IOException {
+    public CommonDTO<ArticleEntity> search(@RequestBody PostVO vo) throws IOException {
         return postService.searchArticle(vo);
     }
 

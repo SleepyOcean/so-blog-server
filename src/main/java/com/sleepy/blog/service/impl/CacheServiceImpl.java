@@ -32,24 +32,23 @@ public class CacheServiceImpl implements CacheService {
     @Autowired
     SettingRepository settingRepository;
 
-
     @Override
     public void setCache(String key, String value) {
-
+        settingCache.put(key, value);
     }
 
     @Override
     public String getCache(String key) {
-        return null;
+        return settingCache.get(key);
     }
 
     @Override
     public void setSettingCache() {
-        log.info("开始缓存设置表");
+        log.info("设置表 - 缓存开始");
         List<SettingEntity> result = settingRepository.findAll();
         result.forEach(e -> {
             settingCache.put(e.getConfigKey(), e.getConfigValue());
         });
-        log.info("缓存设置表完成");
+        log.info("设置表 - 缓存成功");
     }
 }
