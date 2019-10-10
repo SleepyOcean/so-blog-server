@@ -15,13 +15,23 @@ public class DateUtil {
     public static final String DEFAULT_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     /**
+     * 指定格式，格式化日期
+     *
+     * @param date
+     * @return
+     */
+    public static String dateFormat(Date date, String format) {
+        return new SimpleDateFormat(format).format(date);
+    }
+
+    /**
      * 格式化日期
      *
      * @param date
      * @return "yyyy-MM-dd HH:mm:ss"的字符串
      */
     public static String dateFormat(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        return new SimpleDateFormat(DEFAULT_DATETIME_PATTERN).format(date);
     }
 
     /**

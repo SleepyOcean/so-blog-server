@@ -10,6 +10,12 @@ import java.io.*;
  **/
 public class FileUtil {
 
+    public static String getProjectPath() throws IOException {
+        File file = new File("");
+        String filePath = file.getCanonicalPath();
+        return filePath;
+    }
+
     public static String readToString(String fileName) throws IOException {
         String encoding = "UTF-8";
         File file = new File(fileName);
