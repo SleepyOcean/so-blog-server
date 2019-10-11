@@ -2,9 +2,9 @@ package com.sleepy.blog.controller;
 
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.SettingEntity;
-import com.sleepy.blog.service.ConfigService;
+import com.sleepy.blog.service.SettingService;
 import com.sleepy.blog.util.StringUtil;
-import com.sleepy.blog.vo.ConfigVO;
+import com.sleepy.blog.vo.SettingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,22 +17,22 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin
 @RequestMapping("/config")
-public class ConfigController {
+public class SettingController {
 
     @Autowired
-    ConfigService configService;
+    SettingService settingService;
 
     @PostMapping("/save")
-    public CommonDTO<SettingEntity> save(@RequestBody ConfigVO vo) {
-        return configService.save(vo);
+    public CommonDTO<SettingEntity> save(@RequestBody SettingVO vo) {
+        return settingService.save(vo);
     }
 
     @PostMapping("/get")
-    public CommonDTO<SettingEntity> get(@RequestBody ConfigVO vo) {
+    public CommonDTO<SettingEntity> get(@RequestBody SettingVO vo) {
         if (StringUtil.isNullOrEmpty(vo.getId())) {
-            return configService.findAllConfig(vo);
+            return settingService.findAllSetting(vo);
         } else {
-            return configService.findConfig(vo);
+            return settingService.findSetting(vo);
         }
     }
 }

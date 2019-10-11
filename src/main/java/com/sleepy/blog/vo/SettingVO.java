@@ -9,7 +9,7 @@ import lombok.Data;
  * @create 2019-09-04 16:53
  **/
 @Data
-public class ConfigVO {
+public class SettingVO {
     private String id;
     private String key;
     private String value;

@@ -2,7 +2,7 @@ package com.sleepy.blog.service;
 
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.SettingEntity;
-import com.sleepy.blog.vo.ConfigVO;
+import com.sleepy.blog.vo.SettingVO;
 
 /**
  * 配置项Service
@@ -10,7 +10,7 @@ import com.sleepy.blog.vo.ConfigVO;
  * @author ghb
  * @create 2019-09-04 16:54
  **/
-public interface ConfigService {
+public interface SettingService {
 
     /**
      * 保存配置项
@@ -18,7 +18,7 @@ public interface ConfigService {
      * @param vo
      * @return
      */
-    CommonDTO<SettingEntity> save(ConfigVO vo);
+    CommonDTO<SettingEntity> save(SettingVO vo);
 
     /**
      * 获取所有配置项
@@ -26,7 +26,7 @@ public interface ConfigService {
      * @param vo
      * @return
      */
-    CommonDTO<SettingEntity> findAllConfig(ConfigVO vo);
+    CommonDTO<SettingEntity> findAllSetting(SettingVO vo);
 
     /**
      * 获取配置项
@@ -34,5 +34,5 @@ public interface ConfigService {
      * @param vo
      * @return
      */
-    CommonDTO<SettingEntity> findConfig(ConfigVO vo);
+    CommonDTO<SettingEntity> findSetting(SettingVO vo);
 }

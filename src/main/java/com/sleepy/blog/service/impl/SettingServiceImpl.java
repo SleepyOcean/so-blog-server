@@ -3,8 +3,8 @@ package com.sleepy.blog.service.impl;
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.SettingEntity;
 import com.sleepy.blog.repository.SettingRepository;
-import com.sleepy.blog.service.ConfigService;
-import com.sleepy.blog.vo.ConfigVO;
+import com.sleepy.blog.service.SettingService;
+import com.sleepy.blog.vo.SettingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +17,13 @@ import java.util.List;
  * @create 2019-09-04 16:54
  **/
 @Service
-public class ConfigServiceImpl implements ConfigService {
+public class SettingServiceImpl implements SettingService {
 
     @Autowired
     SettingRepository settingRepository;
 
     @Override
-    public CommonDTO<SettingEntity> save(ConfigVO vo) {
+    public CommonDTO<SettingEntity> save(SettingVO vo) {
         CommonDTO<SettingEntity> result = new CommonDTO<>();
         SettingEntity entity = new SettingEntity();
         entity.setConfigKey(vo.getKey());
@@ -34,7 +34,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public CommonDTO<SettingEntity> findAllConfig(ConfigVO vo) {
+    public CommonDTO<SettingEntity> findAllSetting(SettingVO vo) {
         CommonDTO<SettingEntity> result = new CommonDTO<>();
         List<SettingEntity> set = settingRepository.findAll();
         result.setResultList(set);
@@ -42,7 +42,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public CommonDTO<SettingEntity> findConfig(ConfigVO vo) {
+    public CommonDTO<SettingEntity> findSetting(SettingVO vo) {
         CommonDTO<SettingEntity> result = new CommonDTO<>();
         // TODO 获取指定条件配置项
         return result;
