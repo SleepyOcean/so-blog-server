@@ -12,8 +12,8 @@ import java.util.Date;
  **/
 public class DateUtil {
     public static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd";
-    public static final String DATE_PATTERN_POINT = "yyyy.MM.dd";
     public static final String DEFAULT_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String FLYWAY_SQL_FILE_NAME_PATTERN = "yyyy.MM.dd_HHmm";
 
     /**
      * 指定格式，格式化日期

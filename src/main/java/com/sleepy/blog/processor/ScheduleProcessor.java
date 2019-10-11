@@ -3,6 +3,7 @@ package com.sleepy.blog.processor;
 import com.sleepy.blog.util.CommandUtil;
 import com.sleepy.blog.util.DateUtil;
 import com.sleepy.blog.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +17,28 @@ import java.util.Date;
  * @create 2019-09-30 14:11
  **/
 @Component
+@Slf4j
 public class ScheduleProcessor {
 
     @Value("${spring.datasource.username}")
-    private String username = "root";
+    private String username;
     @Value("${spring.datasource.password}")
-    private String password = "123456";
+    private String password;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        new ScheduleProcessor().backupData("test", "so_project", "SoProject");
+        ScheduleProcessor pass = new ScheduleProcessor();
+        System.out.println(pass.username + " , " + pass.password);
+//        new ScheduleProcessor().backupData("test", "so_project", "SoProject");
+    }
+
+    public void backupSoProject() {
+        try {
+            backupData("test", "so_project", "SoProject");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -37,7 +51,7 @@ public class ScheduleProcessor {
      * @throws InterruptedException
      */
     private void backupData(String dbName, String tableName, String tableClassName) throws IOException, InterruptedException {
-        String now = DateUtil.dateFormat(new Date(), DateUtil.DATE_PATTERN_POINT);
+        String now = DateUtil.dateFormat(new Date(), DateUtil.FLYWAY_SQL_FILE_NAME_PATTERN);
         String path = getStoreSqlPath() + "V" + now + "__" + tableClassName;
         String command = "mysqldump -h localhost -u" + username + " -p" + password + " --databases " + dbName + " --tables " + tableName + " -r " + path + ".sql";
         String result = CommandUtil.execute(command);
