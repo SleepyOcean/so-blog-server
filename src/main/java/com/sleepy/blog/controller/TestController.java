@@ -1,5 +1,6 @@
 package com.sleepy.blog.controller;
 
+import com.sleepy.blog.processor.ScheduleProcessor;
 import com.sleepy.blog.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,8 +24,17 @@ public class TestController {
     @Autowired
     TestService testService;
 
+    @Autowired
+    ScheduleProcessor scheduleProcessor;
+
     @GetMapping("/test")
     public Map<String, Object> test() {
         return testService.test();
+    }
+
+    @GetMapping("/backupSQL")
+    public String backupSql() {
+        scheduleProcessor.backupSoProject();
+        return "success";
     }
 }
