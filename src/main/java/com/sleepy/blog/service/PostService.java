@@ -5,7 +5,6 @@ import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.vo.PostVO;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * 文章发布服务
@@ -33,14 +32,15 @@ public interface PostService {
      * @throws IOException
      */
     CommonDTO<ArticleEntity> getRelatedArticle(PostVO vo) throws IOException;
+
     /**
      * 保存文章
      *
      * @param vo
      * @return
-     * @throws ParseException
+     * @throws Exception
      */
-    CommonDTO<String> saveArticle(PostVO vo) throws ParseException;
+    CommonDTO<String> saveArticle(PostVO vo) throws Exception;
 
     /**
      * 搜索文章

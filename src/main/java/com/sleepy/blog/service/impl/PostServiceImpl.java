@@ -6,8 +6,10 @@ import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.entity.TagEntity;
 import com.sleepy.blog.repository.ArticleRepository;
 import com.sleepy.blog.repository.TagRepository;
+import com.sleepy.blog.service.CacheService;
 import com.sleepy.blog.service.PostService;
 import com.sleepy.blog.util.DateUtil;
+import com.sleepy.blog.util.ImageUtil;
 import com.sleepy.blog.util.StringUtil;
 import com.sleepy.blog.vo.PostVO;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -38,6 +39,8 @@ public class PostServiceImpl implements PostService {
     ArticleRepository articleRepository;
     @Autowired
     TagRepository tagRepository;
+    @Autowired
+    CacheService cacheService;
 
     @Override
     public CommonDTO<ArticleEntity> getHotArticle(PostVO vo) throws IOException {
@@ -57,12 +60,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public CommonDTO<String> saveArticle(PostVO vo) throws ParseException {
+    public CommonDTO<String> saveArticle(PostVO vo) throws Exception {
         CommonDTO<String> result = new CommonDTO<>();
         ArticleEntity entity = new ArticleEntity();
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
         entity.setSummary(vo.getSummary());
+        entity.setCoverImg(getImgUrl(vo.getCoverImg(), vo.getTitle()));
         entity.setCreateTime(DateUtil.toDate(vo.getDate(), DateUtil.DEFAULT_DATETIME_PATTERN));
         entity.setTags(vo.getTags());
         if (!StringUtil.isNullOrEmpty(vo.getId())) {
@@ -83,6 +87,12 @@ public class PostServiceImpl implements PostService {
         result.setResult("success");
 
         return result;
+    }
+
+    private String getImgUrl(String base64Str, String name) throws IOException {
+        String localPath = ImageUtil.base64ToImgFile(base64Str, cacheService.getCache("ImageLocalPath") + name);
+        String imgName = name + localPath.substring(localPath.indexOf("."));
+        return cacheService.getCache("ImageServerUrl") + imgName;
     }
 
     @Override
@@ -140,4 +150,5 @@ public class PostServiceImpl implements PostService {
         result.setResultList(tagRepository.findAllTag());
         return result;
     }
+
 }

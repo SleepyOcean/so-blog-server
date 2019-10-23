@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * 文章发布控制器
@@ -34,7 +33,7 @@ public class PostController {
     }
 
     @PostMapping("/save")
-    public CommonDTO<String> save(@RequestBody PostVO vo) throws ParseException {
+    public CommonDTO<String> save(@RequestBody PostVO vo) throws Exception {
         return postService.saveArticle(vo);
     }
 

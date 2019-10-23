@@ -9,4 +9,20 @@ package com.sleepy.blog.common;
 public class Constant {
 
     public static final Integer HTTP_STATUS_OK = 200;
+
+    /**
+     * 字符串分割常量
+     */
+    public static final String QUESTION_MARK = "?";
+    public static final String POINT = ".";
+    public static final String AND = "&";
+    public static final String EQUAL = "=";
+    public static final String NO_EQUAL = "<>";
+    public static final String PARENTHESES_LEFT = "(";
+    public static final String PARENTHESES_RIGHT = ")";
+    public static final String COMMA = ",";
+    public static final String OR_MARK = "OR";
+    public static final String AND_MARK = "AND";
+    public static final String FORWARD_SLASH = "/";
+    public static final String BACK_SLASH = "\\";
 }
