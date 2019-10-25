@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
         entity.setSummary(vo.getSummary());
-        entity.setCoverImg(getImgUrl(vo.getCoverImg(), vo.getTitle()));
+        entity.setCoverImg(getImgUrl(vo.getCoverImg()));
         entity.setCreateTime(DateUtil.toDate(vo.getDate(), DateUtil.DEFAULT_DATETIME_PATTERN));
         entity.setTags(vo.getTags());
         if (!StringUtil.isNullOrEmpty(vo.getId())) {
@@ -89,9 +89,10 @@ public class PostServiceImpl implements PostService {
         return result;
     }
 
-    private String getImgUrl(String base64Str, String name) throws IOException {
-        String localPath = ImageUtil.base64ToImgFile(base64Str, cacheService.getCache("ImageLocalPath") + name);
-        String imgName = name + localPath.substring(localPath.indexOf("."));
+    private String getImgUrl(String base64Str) throws IOException {
+        String randomName = StringUtil.getRandomUUID("");
+        String localPath = ImageUtil.base64ToImgFile(base64Str, cacheService.getCache("ImageLocalPath") + randomName);
+        String imgName = randomName + localPath.substring(localPath.indexOf("."));
         return cacheService.getCache("ImageServerUrl") + imgName;
     }
 
