@@ -1,16 +1,18 @@
 package com.sleepy.blog.service.impl;
 
 import com.google.common.collect.Lists;
+import com.sleepy.blog.common.Constant;
 import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.ArticleEntity;
 import com.sleepy.blog.entity.TagEntity;
 import com.sleepy.blog.repository.ArticleRepository;
 import com.sleepy.blog.repository.TagRepository;
 import com.sleepy.blog.service.CacheService;
+import com.sleepy.blog.service.ImgService;
 import com.sleepy.blog.service.PostService;
 import com.sleepy.blog.util.DateUtil;
-import com.sleepy.blog.util.ImageUtil;
 import com.sleepy.blog.util.StringUtil;
+import com.sleepy.blog.vo.ImgVO;
 import com.sleepy.blog.vo.PostVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,8 @@ public class PostServiceImpl implements PostService {
     TagRepository tagRepository;
     @Autowired
     CacheService cacheService;
+    @Autowired
+    ImgService imgService;
 
     @Override
     public CommonDTO<ArticleEntity> getHotArticle(PostVO vo) throws IOException {
@@ -66,7 +70,7 @@ public class PostServiceImpl implements PostService {
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
         entity.setSummary(vo.getSummary());
-        entity.setCoverImg(getImgUrl(vo.getCoverImg()));
+        entity.setCoverImg(getImgUrl(vo.getCoverImg(), vo.getTitle()));
         entity.setCreateTime(DateUtil.toDate(vo.getDate(), DateUtil.DEFAULT_DATETIME_PATTERN));
         entity.setTags(vo.getTags());
         if (!StringUtil.isNullOrEmpty(vo.getId())) {
@@ -89,11 +93,13 @@ public class PostServiceImpl implements PostService {
         return result;
     }
 
-    private String getImgUrl(String base64Str) throws IOException {
-        String randomName = StringUtil.getRandomUUID("");
-        String localPath = ImageUtil.base64ToImgFile(base64Str, cacheService.getCache("ImageLocalPath") + randomName);
-        String imgName = randomName + localPath.substring(localPath.indexOf("."));
-        return cacheService.getCache("ImageServerUrl") + imgName;
+    private String getImgUrl(String base64Str, String title) throws IOException {
+        ImgVO vo = new ImgVO();
+        vo.setImgOfBase64(base64Str);
+        vo.setAlias("《" + title + "》封面");
+        vo.setType(Constant.IMG_TYPE_COVER);
+        vo.setTags("文章封面");
+        return imgService.upload(vo);
     }
 
     @Override

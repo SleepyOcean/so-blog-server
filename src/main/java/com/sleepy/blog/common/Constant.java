@@ -25,4 +25,12 @@ public class Constant {
     public static final String AND_MARK = "AND";
     public static final String FORWARD_SLASH = "/";
     public static final String BACK_SLASH = "\\";
+
+    /**
+     * 图片类型常量
+     */
+    public static final String IMG_TYPE_PHOTO = "照片";
+    public static final String IMG_TYPE_COVER = "封面";
+    public static final String IMG_TYPE_OTHERS = "其他";
+    public static final String IMG_TYPE_WALLPAPER = "壁纸";
 }
