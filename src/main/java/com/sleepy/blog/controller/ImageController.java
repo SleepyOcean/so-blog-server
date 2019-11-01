@@ -35,8 +35,27 @@ public class ImageController {
         imgService.compressImg(response, ratio, url);
     }
 
+    /**
+     * TODO 要加权限验证 - 管理员
+     *
+     * @param vo
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/save")
-    public String getCompressedImage(@RequestBody ImgVO vo) throws IOException {
+    public String saveImage(@RequestBody ImgVO vo) throws IOException {
         return imgService.upload(vo);
+    }
+
+    /**
+     * TODO 要加权限验证 - 管理员
+     *
+     * @param vo
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/delete")
+    public String deleteImage(@RequestBody ImgVO vo) throws IOException {
+        return imgService.delete(vo);
     }
 }

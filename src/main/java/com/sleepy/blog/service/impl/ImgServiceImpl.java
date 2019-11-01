@@ -1,6 +1,8 @@
 package com.sleepy.blog.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.sleepy.blog.common.Constant;
 import com.sleepy.blog.entity.ImgEntity;
 import com.sleepy.blog.repository.ImgRepository;
 import com.sleepy.blog.service.CacheService;
@@ -23,6 +25,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -84,6 +87,9 @@ public class ImgServiceImpl implements ImgService {
         ImgEntity entity = JSON.parseObject(JSON.toJSONString(vo), ImgEntity.class);
         Date current = DateUtil.getDateWithCurrent(0, Calendar.DAY_OF_YEAR);
         // 图片名称的路径： 图片的类型/图片上传日期/图片的UUID， 例如： 封面/2019-10-31/2fc9e266e21f4fe18f92da2fc56567f8
+        if (StringUtil.isNullOrEmpty(entity.getType())) {
+            entity.setType(Constant.IMG_TYPE_OTHERS);
+        }
         String randomName = entity.getType() + File.separator + DateUtil.dateFormat(current, DateUtil.DEFAULT_DATE_PATTERN) + File.separator + StringUtil.getRandomUuid("");
         String imgPath = ImageUtil.base64ToImgFile(vo.getImgOfBase64(), cacheService.getCache("ImageLocalPath") + randomName);
         try {
@@ -101,6 +107,20 @@ public class ImgServiceImpl implements ImgService {
             file.delete();
             throw e;
         }
-        return cacheService.getCache("ImageServerUrl") + entity.getId();
+        Map<String, Object> result = new HashMap<>(2);
+        result.put("id", entity.getId());
+        result.put("url", Constant.IMG_SERVER_URL_PLACEHOLDER + entity.getId());
+        return new JSONObject(result).toJSONString();
+    }
+
+    @Override
+    public String delete(ImgVO vo) throws IOException {
+        if (!StringUtil.isNullOrEmpty(vo.getId())) {
+            String imgPath = cacheService.getCache("ImageLocalPath") + imgRepository.findLocalPathById(vo.getId());
+            File file = new File(imgPath);
+            file.delete();
+            imgRepository.deleteById(vo.getId());
+        }
+        return "success";
     }
 }

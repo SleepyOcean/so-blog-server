@@ -40,4 +40,13 @@ public interface ImgService {
      * @throws IOException
      */
     String upload(ImgVO vo) throws IOException;
+
+    /**
+     * 图片删除接口
+     *
+     * @param vo
+     * @return
+     * @throws IOException
+     */
+    String delete(ImgVO vo) throws IOException;
 }

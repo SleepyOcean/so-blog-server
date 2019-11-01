@@ -31,7 +31,7 @@ public class ImgEntity {
     private String tags;
     @Column(name = "archive", columnDefinition = "varchar(255) comment '图片归档（多个以，分隔）'")
     private String archive;
-    @Column(name = "associateAttribute", columnDefinition = "varchar(255) comment '关联属性'")
+    @Column(name = "associateAttribute", columnDefinition = "varchar(255) comment '关联属性，格式：【图片出处】：【图片使用位置】：是否可以单独删除'")
     private String associateAttribute;
     @Column(name = "describeInfo", columnDefinition = "varchar(255) comment '描述信息'")
     private String describeInfo;

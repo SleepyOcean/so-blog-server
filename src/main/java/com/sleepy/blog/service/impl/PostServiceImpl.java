@@ -1,5 +1,6 @@
 package com.sleepy.blog.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.sleepy.blog.common.Constant;
 import com.sleepy.blog.dto.CommonDTO;
@@ -70,7 +71,9 @@ public class PostServiceImpl implements PostService {
         entity.setTitle(vo.getTitle());
         entity.setContent(vo.getContent());
         entity.setSummary(vo.getSummary());
-        entity.setCoverImg(getImgUrl(vo.getCoverImg(), vo.getTitle()));
+        if (!StringUtil.isNullOrEmpty(vo.getCoverImg())) {
+            entity.setCoverImg(getImgUrl(vo.getCoverImg(), vo.getTitle()));
+        }
         entity.setCreateTime(DateUtil.toDate(vo.getDate(), DateUtil.DEFAULT_DATETIME_PATTERN));
         entity.setTags(vo.getTags());
         if (!StringUtil.isNullOrEmpty(vo.getId())) {
@@ -99,7 +102,8 @@ public class PostServiceImpl implements PostService {
         vo.setAlias("《" + title + "》封面");
         vo.setType(Constant.IMG_TYPE_COVER);
         vo.setTags("文章封面");
-        return imgService.upload(vo);
+        vo.setAssociateAttribute("文章封面:" + title);
+        return JSON.parseObject(imgService.upload(vo)).getString("url");
     }
 
     @Override
