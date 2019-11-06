@@ -41,6 +41,26 @@ public class ScheduleProcessor {
         }
     }
 
+    public void backupSoSetting() {
+        try {
+            backupData("test", "so_setting", "SoSetting");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void backupSoImg() {
+        try {
+            backupData("test", "so_img", "SoImg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 备份数据
      *

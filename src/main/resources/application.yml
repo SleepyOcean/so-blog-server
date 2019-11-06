@@ -26,3 +26,4 @@ logging:
     root: warn
     com:
       sleepy: info
+  file: log\so-blog-server.log

@@ -86,10 +86,10 @@ public class ImgServiceImpl implements ImgService {
     public String upload(ImgVO vo) throws IOException {
         ImgEntity entity = JSON.parseObject(JSON.toJSONString(vo), ImgEntity.class);
         Date current = DateUtil.getDateWithCurrent(0, Calendar.DAY_OF_YEAR);
-        // 图片名称的路径： 图片的类型/图片上传日期/图片的UUID， 例如： 封面/2019-10-31/2fc9e266e21f4fe18f92da2fc56567f8
         if (StringUtil.isNullOrEmpty(entity.getType())) {
             entity.setType(Constant.IMG_TYPE_OTHERS);
         }
+        // 图片名称的路径： 图片的类型/图片上传日期/图片的UUID， 例如： 封面/2019-10-31/2fc9e266e21f4fe18f92da2fc56567f8
         String randomName = entity.getType() + File.separator + DateUtil.dateFormat(current, DateUtil.DEFAULT_DATE_PATTERN) + File.separator + StringUtil.getRandomUuid("");
         String imgPath = ImageUtil.base64ToImgFile(vo.getImgOfBase64(), cacheService.getCache("ImageLocalPath") + randomName);
         try {
