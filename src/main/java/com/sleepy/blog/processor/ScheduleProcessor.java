@@ -3,6 +3,7 @@ package com.sleepy.blog.processor;
 import com.sleepy.blog.util.CommandUtil;
 import com.sleepy.blog.util.DateUtil;
 import com.sleepy.blog.util.FileUtil;
+import com.sleepy.blog.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -72,7 +73,7 @@ public class ScheduleProcessor {
      */
     private void backupData(String dbName, String tableName, String tableClassName) throws IOException, InterruptedException {
         String now = DateUtil.dateFormat(new Date(), DateUtil.FLYWAY_SQL_FILE_NAME_PATTERN);
-        String path = getStoreSqlPath() + "V" + now + "__" + tableClassName;
+        String path = getStoreSqlPath() + "V" + now + StringUtil.getRandomNumString(2) + "__" + tableClassName;
         String command = "mysqldump -h localhost -u" + username + " -p" + password + " --databases " + dbName + " --tables " + tableName + " -r " + path + ".sql";
         String result = CommandUtil.execute(command);
         System.out.println(result);

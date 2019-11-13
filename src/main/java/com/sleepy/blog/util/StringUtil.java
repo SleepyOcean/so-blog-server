@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,5 +121,20 @@ public class StringUtil {
         String trimStr = numStr.replaceAll("[^0-9]", "").trim();
         int value = Integer.parseInt(StringUtil.isNullOrEmpty(trimStr) ? "0" : trimStr);
         return value;
+    }
+
+    /**
+     * 获取指定位数的随机数字字符串
+     *
+     * @param bit
+     * @return
+     */
+    public static String getRandomNumString(int bit) {
+        Random random = new Random();
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < bit; i++) {
+            s.append(random.nextInt(9));
+        }
+        return s.toString();
     }
 }
