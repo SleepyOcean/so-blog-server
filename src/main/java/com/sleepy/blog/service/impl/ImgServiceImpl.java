@@ -45,7 +45,12 @@ public class ImgServiceImpl implements ImgService {
 
     @Override
     public byte[] getImg(HttpServletResponse response, String id) throws IOException {
-        String imgPath = cacheService.getCache("ImageLocalPath") + imgRepository.findLocalPathById(id);
+        String imgPath;
+        if (id.contains(Constant.POINT)) {
+            imgPath = cacheService.getCache("ImageLocalPath") + "resource/" + id;
+        } else {
+            imgPath = cacheService.getCache("ImageLocalPath") + imgRepository.findLocalPathById(id);
+        }
         File file = new File(imgPath);
         FileInputStream inputStream = new FileInputStream(file);
         byte[] bytes = new byte[inputStream.available()];
