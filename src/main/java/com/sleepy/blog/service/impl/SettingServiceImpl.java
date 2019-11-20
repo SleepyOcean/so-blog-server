@@ -4,6 +4,7 @@ import com.sleepy.blog.dto.CommonDTO;
 import com.sleepy.blog.entity.SettingEntity;
 import com.sleepy.blog.repository.SettingRepository;
 import com.sleepy.blog.service.SettingService;
+import com.sleepy.blog.util.StringUtil;
 import com.sleepy.blog.vo.SettingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,13 @@ public class SettingServiceImpl implements SettingService {
     public CommonDTO<SettingEntity> save(SettingVO vo) {
         CommonDTO<SettingEntity> result = new CommonDTO<>();
         SettingEntity entity = new SettingEntity();
+        if (!StringUtil.isNullOrEmpty(vo.getId())) {
+            entity.setId(vo.getId());
+        }
         entity.setConfigKey(vo.getKey());
         entity.setConfigValue(vo.getValue());
         entity.setConfigInfo(vo.getInfo());
-        result.setResult(settingRepository.save(entity));
+        result.setResult(settingRepository.saveAndFlush(entity));
         return result;
     }
 
