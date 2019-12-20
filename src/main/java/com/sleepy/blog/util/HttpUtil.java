@@ -19,8 +19,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Http请求工具类
@@ -189,9 +192,16 @@ public class HttpUtil {
         return respContent;
     }
 
-    public static void main(String[] args) throws IOException {
-        String url = "http://localhost:8092/haiyan-server/resource/vehicles/vehicle-concealed/analysis";
-        String params = "{\"startOccTime\":\"2019-08-21 17:25:09\",\"endOccTime\":\"2019-08-28 17:25:09\",\"beforeRetrospectDay\":\"2\",\"beforeLimitTimes\":\"1\",\"afterRetrospectDay\":\"2\",\"afterLimitTimes\":\"1000\",\"deviceLimit\":[\"32050500011120000862\",\"32050500011120000934\",\"32050500011120000928\",\"32050500011120000930\",\"32050500011120000892\",\"32050500011120000856\",\"32050500011120000858\",\"32050500011120001024\"],\"userName\":\"gehoubao_hy\",\"searchFlag\":1,\"recordStartNo\":0,\"pageRecordNum\":30}";
-        System.out.println(sendPost(url, params));
+    public static void main(String[] args) throws IOException, InterruptedException {
+        System.setProperty("webdriver.chrome.driver", "E:\\Dev Tools\\browser_driver\\chromedriver.exe");
+        WebDriver webDriver = new ChromeDriver();
+        webDriver.manage().window().maximize();
+        webDriver.manage().deleteAllCookies();
+        // 与浏览器同步非常重要，必须等待浏览器加载完毕
+        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        webDriver.get("https://movie.douban.com/top250");
+        Thread.sleep(1000);
+        webDriver.quit();
     }
 }
